@@ -2,89 +2,79 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class GameLogic : MonoBehaviour
 {
     // Start is called before the first frame update
-    int min = 1, max = 1000, guesses, upper, lower, guess;
-    bool gameOver = false, started = false;
-    string[] lines;
-    [SerializeField] Text textWindow;
-    
+    int min = 1, max = 1000, guesses = 0, upper, lower, guess;
+    bool started = false, over = false;
+    [SerializeField] GameObject player;
+    [SerializeField] GameObject next;
+    [SerializeField] Text numberDisplay;
+    [SerializeField] Text dialog;
+    string toDialog;
     void Start()
     {
         guesses = 0;
         upper = max+1;
         lower = min;
-        lines = new string[3];
-        SetUILine(1, "Welcome to Number Wizard, the home of the most calculating mage.");
-        SetUILine(2, ": Select a number ("+min+"-"+max+") then press SPACE to begin.");
+        toDialog = "Select a number between " + min + " and " + max + " then click next.";
+        player.SetActive(false);
+        next.SetActive(true);
+        MakeGuess(500);
     }
     void MakeGuess(int theGuess)
     {
-        guess = theGuess;
-        SetUILine(2,": Is your number higher or lower than " + theGuess + "?\n" +
-                  "Press UP for higher, DOWN for lower, SPACE for equal.");
+        if (upper == lower || lower == max)
+        {
+            if (upper >= max) toDialog = "Your number was too high to guess!";
+            else if (lower == min) toDialog = "Your number was too low to guess!";
+            else toDialog = "Your number was " + guess + " and it took me " + guesses + " attempts to find it!";
+            over = true;
+            player.SetActive(false);
+            next.SetActive(true);
+        }
+        guess = (theGuess > 0) ? theGuess : Random.Range(lower,upper);
+        guesses += 1;
     }
-    void Complain(bool high)
-    {
-        SetUILine(2,"! I can't reach your number, it is too " + (high ? "high!" : "low!"));
-        EndGame();
-    }
-    void EndGame()
-    {
-        gameOver = true;
-        SetUILine(3,"This game is now over, would you like to play again?\n"+
-                  "Press SPACE to start again.");
-    }
-    void SetUILine(int line, string input)
-    {
-        lines[line - 1] = input;
-    }
+
     // Update is called once per frame
     void Update()
     {
-        //input
-        if (!gameOver && started)
-        {
-            if (Input.GetKeyDown("up"))
-            {
-                lower = guess;
-                guesses += 1;
-                if (guess < max) MakeGuess((upper + lower) / 2);
-                else Complain(true);
-            }
-            else if (Input.GetKeyDown("down"))
-            {
-                upper = guess;
-                guesses += 1;
-                if (guess > min) MakeGuess((upper + lower) / 2);
-                else Complain(false);
-            }
-            else if (Input.GetKeyDown("space"))
-            {
-                SetUILine(2,"Your number was {"+guess+"} & it took me "+guesses+" attempts to find it!");
-                EndGame();
-            }
-        }
-        else if (!started)
-        {
-            if (Input.GetKeyDown("space"))
-            {
-                started = true;
-                MakeGuess(500);
-            }
-        }
-        else if (gameOver)
-        {
-            if (Input.GetKeyDown("space"))
-            {
-                started = false;
-                gameOver = false;
-                Start();
-            }
-        }
-        //ui
-        textWindow.text = lines[0] + "\n" + lines[1] + "\n" + lines[2];
+        numberDisplay.text = ""+guess;
+        dialog.text = toDialog;
     }
+    public void OnUpClicked()
+    {
+        lower = guess;
+        MakeGuess(-1);
+    }
+    public void OnDownClicked()
+    {
+        upper = guess;
+        MakeGuess(-1);
+    }
+    public void OnYesClicked()
+    {
+        over = true;
+        toDialog = "Your number was " + guess + " and it took me " + guesses + " attempts to find it!";
+        player.SetActive(false);
+        next.SetActive(true);
+
+    }
+    public void OnNextClicked()
+    {
+        if (!started)
+        {
+            started = true;
+            player.SetActive(true);
+            next.SetActive(false);
+        }
+        else if (over)
+        {
+            SceneManager.LoadScene(2);
+        }
+    }
+
 }
