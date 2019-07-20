@@ -2,39 +2,53 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class HelloWorld : MonoBehaviour
 {
     // Start is called before the first frame update
     DateTime t;
-    int count, min=1, max=1000,guesses=0,upper,lower,guess;
+    int min = 1, max = 1000, guesses, upper, lower, guess;
     bool gameOver = false, started = false;
+    string[] lines;
+    [SerializeField] Text textWindow;
+    [SerializeField] Text fpsDisplay;
     void Start()
     {
         t = DateTime.Now;
-        Debug.Log("Welcome to Number Wizard, the home of the most calculating mage.");
-        count = 0;
+        guesses = 0;
         upper = max+1;
         lower = min;
-        Debug.Log(": Select a number ("+min+"-"+max+") then press SPACE to begin.");
-        
+        lines = new string[3];
+        SetUILine(1, "Welcome to Number Wizard, the home of the most calculating mage.");
+        SetUILine(2, ": Select a number ("+min+"-"+max+") then press SPACE to begin.");
     }
 
     void MakeGuess(int theGuess)
     {
         guess = theGuess;
-        Debug.Log(": Is your number higher or lower than " + theGuess + "?\n" +
+        SetUILine(2,": Is your number higher or lower than " + theGuess + "?\n" +
                   "Press UP for higher, DOWN for lower, SPACE for equal.");
     }
     void Complain(bool high)
     {
-        Debug.Log("! I can't reach your number, it is too" + (high ? "high!" : "low!"));
-        gameOver = true;
+        SetUILine(2,"! I can't reach your number, it is too " + (high ? "high!" : "low!"));
+        EndGame();
     }
-
+    void EndGame()
+    {
+        gameOver = true;
+        SetUILine(3,"This game is now over, would you like to play again?\n"+
+                  "Press SPACE to start again.");
+    }
+    void SetUILine(int line, string input)
+    {
+        lines[line - 1] = input;
+    }
     // Update is called once per frame
     void Update()
     {
+        //input
         if (!gameOver && started)
         {
             if (Input.GetKeyDown("up"))
@@ -53,11 +67,11 @@ public class HelloWorld : MonoBehaviour
             }
             else if (Input.GetKeyDown("space"))
             {
-                gameOver = true;
-                Debug.Log("Your number was {"+guess+"} & it took me "+guesses+" attempts to find it!");
+                SetUILine(2,"Your number was {"+guess+"} & it took me "+guesses+" attempts to find it!");
+                EndGame();
             }
         }
-        if (!started)
+        else if (!started)
         {
             if (Input.GetKeyDown("space"))
             {
@@ -65,19 +79,28 @@ public class HelloWorld : MonoBehaviour
                 MakeGuess(500);
             }
         }
-        //Frame counting should always be the last thing to do after the game logic. CheckFrame(bool log)
-        CheckFrame(false);
+        else if (gameOver)
+        {
+            if (Input.GetKeyDown("space"))
+            {
+                started = false;
+                gameOver = false;
+                Start();
+            }
+        }
+        //ui
+        textWindow.text = lines[0] + "\n" + lines[1] + "\n" + lines[2];
+        CheckFrame();
     }
 
-    
-
-    void CheckFrame(bool log)
+    int count = 0;
+    void CheckFrame()
     {
         DateTime n = DateTime.Now;
         count = count + 1;
         if (n.Second == t.Second + 1)
         {
-            if(log) Debug.Log("FPS: " + count);
+            fpsDisplay.text = "FPS: " + count;
             count = 0;
             t = n;
         }
