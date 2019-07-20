@@ -11,6 +11,7 @@ public class HelloWorld : MonoBehaviour
     int min = 1, max = 1000, guesses, upper, lower, guess;
     bool gameOver = false, started = false;
     string[] lines;
+    Color32 r = new Color32(255, 0, 0,255), g = new Color32(0, 255, 0,255), o = new Color32(255, 140, 0,255);
     [SerializeField] Text textWindow;
     [SerializeField] Text fpsDisplay;
     void Start()
@@ -101,6 +102,9 @@ public class HelloWorld : MonoBehaviour
         if (n.Second == t.Second + 1)
         {
             fpsDisplay.text = "FPS: " + count;
+            if (count >= 60) fpsDisplay.color = g;
+            else if (count >= 30) fpsDisplay.color = o;
+            else fpsDisplay.color = r;
             count = 0;
             t = n;
         }
