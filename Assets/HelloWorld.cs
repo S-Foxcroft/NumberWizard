@@ -30,13 +30,13 @@ public class HelloWorld : MonoBehaviour
             {
                 lower = guess;
                 guesses += 1;
-                MakeGuess(lower + (upper - lower) / 2);
+                MakeGuess((upper + lower) / 2);
             }
             else if (Input.GetKeyDown("down"))
             {
                 upper = guess;
                 guesses += 1;
-                MakeGuess(lower + (upper - lower) / 2);
+                MakeGuess((upper + lower) / 2);
             }
             else if (Input.GetKeyDown("space"))
             {
