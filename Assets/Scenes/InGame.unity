@@ -235,7 +235,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   textWindow: {fileID: 1568383005}
-  fpsDisplay: {fileID: 866709710}
 --- !u!20 &519420031
 Camera:
   m_ObjectHideFlags: 0
@@ -370,6 +369,7 @@ GameObject:
   - component: {fileID: 866709709}
   - component: {fileID: 866709711}
   - component: {fileID: 866709710}
+  - component: {fileID: 866709712}
   m_Layer: 5
   m_Name: Text
   m_TagString: Untagged
@@ -440,6 +440,19 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 866709708}
   m_CullTransparentMesh: 0
+--- !u!114 &866709712
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 866709708}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0e0cd4afcfd2bec4eb592080ed1f8307, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  fpsDisplay: {fileID: 866709710}
 --- !u!1 &878499179
 GameObject:
   m_ObjectHideFlags: 0

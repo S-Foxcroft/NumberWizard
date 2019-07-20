@@ -1,22 +1,18 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class HelloWorld : MonoBehaviour
+public class GameLogic : MonoBehaviour
 {
     // Start is called before the first frame update
-    DateTime t;
     int min = 1, max = 1000, guesses, upper, lower, guess;
     bool gameOver = false, started = false;
     string[] lines;
-    Color32 r = new Color32(255, 0, 0,255), g = new Color32(0, 255, 0,255), o = new Color32(255, 140, 0,255);
     [SerializeField] Text textWindow;
-    [SerializeField] Text fpsDisplay;
+    
     void Start()
     {
-        t = DateTime.Now;
         guesses = 0;
         upper = max+1;
         lower = min;
@@ -24,7 +20,6 @@ public class HelloWorld : MonoBehaviour
         SetUILine(1, "Welcome to Number Wizard, the home of the most calculating mage.");
         SetUILine(2, ": Select a number ("+min+"-"+max+") then press SPACE to begin.");
     }
-
     void MakeGuess(int theGuess)
     {
         guess = theGuess;
@@ -91,22 +86,5 @@ public class HelloWorld : MonoBehaviour
         }
         //ui
         textWindow.text = lines[0] + "\n" + lines[1] + "\n" + lines[2];
-        CheckFrame();
-    }
-
-    int count = 0;
-    void CheckFrame()
-    {
-        DateTime n = DateTime.Now;
-        count = count + 1;
-        if (n.Second == t.Second + 1)
-        {
-            fpsDisplay.text = "FPS: " + count;
-            if (count >= 60) fpsDisplay.color = g;
-            else if (count >= 30) fpsDisplay.color = o;
-            else fpsDisplay.color = r;
-            count = 0;
-            t = n;
-        }
     }
 }
